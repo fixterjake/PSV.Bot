@@ -4,25 +4,31 @@
  * several different parameters.
  */
 class BotContext {
-  constructor() {
-    /**
-     * @type {CommandDispatcher}
-     */
-    this.commandDispatcher = null;
+    constructor() {
+        /**
+         * @type {CommandDispatcher}
+         */
+        this.commandDispatcher = null;
 
-    /**
-     * @type {Client} - this comes from DiscordJS
-     */
-    this.discordClient = null;
-  }
+        /**
+         * @type {Client} - this comes from DiscordJS
+         */
+        this.discordClient = null;
 
-  registerCommandDispatcher(commandDispatcher) {
-    this.commandDispatcher = commandDispatcher;
-  }
+        this.database = null;
+    }
 
-  registerDiscordClient(discordClient) {
-    this.discordClient = discordClient;
-  }
+    registerCommandDispatcher(commandDispatcher) {
+        this.commandDispatcher = commandDispatcher;
+    }
+
+    registerDiscordClient(discordClient) {
+        this.discordClient = discordClient;
+    }
+
+    registerDatabase(database) {
+        this.database = database;
+    }
 }
 
 module.exports = BotContext;
