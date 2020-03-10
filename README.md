@@ -1,8 +1,8 @@
-##PSV Discord Bot
+## PSV Discord Bot
 
-###Original code from AdamLearns
+### Original code from AdamLearns
 
-###To Install:
+### To Install:
 
 1. Once cloned run `yarn install`
 2. Next create a file called `.env.discord`
