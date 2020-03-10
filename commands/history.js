@@ -42,5 +42,8 @@ module.exports = {
                 logger.info(error);
             }
         }
+        else {
+            message.channel.send(`**Usage**: !history id`);
+        }
     },
 };

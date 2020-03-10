@@ -19,6 +19,7 @@ class Database {
                 client_id INTEGER NOT NULL,
                 user TEXT NOT NULL,
                 staffMember TEXT NOT NULL,
+                staffMember_id INTEGER NOT NULL,
                 timestamp TEXT NOT NULL,
                 reason TEXT NOT NULL,
                 FOREIGN KEY (client_id) REFERENCES users(client_id)
@@ -30,6 +31,7 @@ class Database {
                 client_id INTEGER NOT NULL,
                 user TEXT NOT NULL,
                 staffMember TEXT NOT NULL,
+                staffMember_id INTEGER NOT NULL,
                 timestamp TEXT NOT NULL,
                 reason TEXT NOT NULL,
                 FOREIGN KEY (client_id) REFERENCES users(client_id)
@@ -41,6 +43,7 @@ class Database {
                 client_id INTEGER NOT NULL,
                 user TEXT NOT NULL,
                 staffMember TEXT NOT NULL,
+                staffMember_id INTEGER NOT NULL,
                 timestamp TEXT NOT NULL,
                 reason TEXT NOT NULL,
                 FOREIGN KEY (client_id) REFERENCES users(client_id)

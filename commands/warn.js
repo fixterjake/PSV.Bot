@@ -7,7 +7,7 @@ const logger = require('../utils/logger');
  * @param {{ id: any; username: any; send: (arg0: string) => void; }} user
  * @param {any} reason
  * @param {{ database: { db: { run: (arg0: string, arg1: any[], arg2: (error: any) => void) => void; }; }; }} botContext
- * @param {{ username: any; }} staffMember
+ * @param {{ username: any; id: any; }} staffMember
  */
 async function warn(user, reason, botContext, staffMember) {
     const date = new Date();
@@ -27,9 +27,12 @@ async function warn(user, reason, botContext, staffMember) {
     /**
      * @param {string} error
      */
+    /**
+     * @param {string} error
+     */
     botContext.database.db.run(
-        'INSERT INTO warnings (client_id, user, staffMember, timestamp, reason) VALUES (?,?,?,?,?)',
-        [user.id, user.username, staffMember.username, dateString, reason],
+        'INSERT INTO warnings (client_id, user, staffMember, staffMember_id, timestamp, reason) VALUES (?,?,?,?,?,?)',
+        [user.id, user.username, staffMember.username, staffMember.id, dateString, reason],
         (error) => {
             if (error) {
                 logger.info(error);
@@ -52,7 +55,7 @@ module.exports = {
                 const reason = reasonArray.join(' ');
                 const staffMember = message.author;
                 warn(user, reason, botContext, staffMember);
-                logger.info(`User ${user.username} warned for '${reason}'`);
+                logger.info(`User ${user.username} warned by ${staffMember.username} for '${reason}'`);
                 const embed = new Discord.RichEmbed()
                     .setAuthor('PSV Bot')
                     .setColor('#0099ff')
@@ -60,10 +63,13 @@ module.exports = {
                         `${user} warned by ${message.author}\n\n **Reason**: ${reason}`
                     )
                     .setTimestamp();
-                botContext.modChannel.send(embed).then(message.delete());
+                botContext.modChannel.send(embed);
             } catch (error) {
                 logger.info(error);
             }
+        }
+        else {
+            message.channel.send(`**Usage**: !warn @user reason`);
         }
     },
 };

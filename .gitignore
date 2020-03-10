@@ -1,7 +1,6 @@
 node_modules
 *.bak
 .DS_Store
-.env.development
 .vscode/*
 yarn-error.log
 logs

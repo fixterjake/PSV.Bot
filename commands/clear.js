@@ -27,13 +27,18 @@ module.exports = {
     name: '!clear',
     role: 'test',
     execute({ message, botContext, args }) {
-        try {
-            const number = parseInt(args[0]);
-            if (_.size(args) > 0 && number > 0) {
-                clearMessages(message.channel, number + 1);
+        if (_.size(args) > 0) {
+            try {
+                const number = parseInt(args[0]);
+                if (_.size(args) > 0 && number > 0) {
+                    clearMessages(message.channel, number + 1);
+                }
+            } catch (error) {
+                logger.info(error);
             }
-        } catch (error) {
-            logger.info(error);
+        }
+        else {
+            message.channel.send(`**Usage**: !clear number`);
         }
     },
 };

@@ -4,13 +4,16 @@ const Discord = require('discord.js');
 const logger = require('../utils/logger');
 
 /**
- * @param {{ id: any; username: any; send: (arg0: string) => void; }} user
+ * @param {{ send: (arg0: string) => void; id: any; username: any; }} user
  * @param {any} reason
  * @param {{ discordClient: { guilds: { first: () => { (): any; new (): any; member: { (arg0: any): any; new (): any; }; }; }; }; database: { db: { run: (arg0: string, arg1: any[], arg2: (error: any) => void) => void; }; }; }} botContext
- * @param {{ username: any; }} staffMember
+ * @param {{ username: any; id: any; }} staffMember
  */
 async function ban(user, reason, botContext, staffMember) {
     const member = botContext.discordClient.guilds.first().member(user);
+    /**
+     * @param {number} msec
+     */
     const delay = (msec) => new Promise((resolve) => setTimeout(resolve, msec));
     const date = new Date();
     const dateString =
@@ -29,9 +32,12 @@ async function ban(user, reason, botContext, staffMember) {
     user.send(
         `You have been banned from **Power Set Virtual** by **${staffMember.username}**\n\n **Reason**: ${reason}`
     );
+    /**
+     * @param {string} error
+     */
     botContext.database.db.run(
-        'INSERT INTO bans (client_id, user, staffMember, timestamp, reason) VALUES (?,?,?,?,?)',
-        [user.id, user.username, staffMember.username, dateString, reason],
+        'INSERT INTO bans (client_id, user, staffMember, staffMember_id, timestamp, reason) VALUES (?,?,?,?,?,?)',
+        [user.id, user.username, staffMember.username, staffMember.id, dateString, reason],
         (error) => {
             if (error) {
                 logger.info(error);
@@ -55,7 +61,7 @@ module.exports = {
                 const staffMember = message.author;
                 if (ban(userMention, reason, botContext, staffMember)) {
                     logger.info(
-                        `User ${userMention.username} banned for '${reason}'`
+                        `User ${userMention.username} banned by ${staffMember.username} for '${reason}'`
                     );
                     const embed = new Discord.RichEmbed()
                         .setAuthor('PSV Bot')
@@ -64,11 +70,14 @@ module.exports = {
                             `${userMention} banned by ${message.author}\n\n **Reason**: ${reason}`
                         )
                         .setTimestamp();
-                    botContext.modChannel.send(embed).then(message.delete());
+                    botContext.modChannel.send(embed);
                 }
             } catch (error) {
                 logger.info(error);
             }
+        }
+        else {
+            message.channel.send(`**Usage**: !ban @user reason`);
         }
     },
 };

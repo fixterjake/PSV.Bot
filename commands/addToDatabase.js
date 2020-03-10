@@ -16,7 +16,9 @@ async function addToDatabase(member, botContext) {
             if (error) {
                 logger.info(error);
             }
-            logger.info(`User ${member.username} added to database`);
+            else {
+                logger.info(`User ${member.username} added to database`);
+            }
         }
     );
 }
