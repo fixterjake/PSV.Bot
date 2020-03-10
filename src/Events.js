@@ -29,8 +29,15 @@ class Events {
                 }
             }
         );
-        logger.info(`User ${member.user.username} added to database`);
-        this.AuditLogs.log('Member Joined', `**Member**: ${member}`);
+        let date = new Date();
+        if (member.user.createdAt.getDate() - date.getDate() <= 7) {
+            logger.info(`User ${member.user.username} added to database`);
+            this.AuditLogs.log('Member Joined', `**Member**: ${member}\n\n **Warning** User created within 7 days!\n**Creation Date**: ${member.user.createdAt.getDate()}`);
+        }
+        else {
+            logger.info(`User ${member.user.username} added to database`);
+            this.AuditLogs.log('Member Joined', `**Member**: ${member}`);
+        }
     }
 
     /**
