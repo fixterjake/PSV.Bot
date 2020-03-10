@@ -1,7 +1,14 @@
+// @ts-check
 const _ = require('lodash');
 const Discord = require('discord.js');
 const logger = require('../utils/logger');
 
+/**
+ * @param {{ id: any; username: any; send: (arg0: string) => void; }} user
+ * @param {any} reason
+ * @param {{ database: { db: { run: (arg0: string, arg1: any[], arg2: (error: any) => void) => void; }; }; }} botContext
+ * @param {{ username: any; }} staffMember
+ */
 async function warn(user, reason, botContext, staffMember) {
     const date = new Date();
     const dateString =
@@ -17,17 +24,20 @@ async function warn(user, reason, botContext, staffMember) {
         date.getMinutes() +
         ':' +
         date.getSeconds();
+    /**
+     * @param {string} error
+     */
     botContext.database.db.run(
-        'INSERT INTO warnings (client_id, user, timestamp, reason) VALUES (?,?,?,?)',
-        [user.id, user.username, dateString, reason],
+        'INSERT INTO warnings (client_id, user, staffMember, timestamp, reason) VALUES (?,?,?,?,?)',
+        [user.id, user.username, staffMember.username, dateString, reason],
         (error) => {
             if (error) {
                 logger.info(error);
             }
-            user.send(
-                `You have been warned in **Power Set Virtual** by **${staffMember.username}**\n\n **Reason**: ${reason}`
-            );
         }
+    );
+    user.send(
+        `You have been warned in **Power Set Virtual** by **${staffMember.username}**\n\n **Reason**: ${reason}`
     );
 }
 
@@ -42,15 +52,15 @@ module.exports = {
                 const reason = reasonArray.join(' ');
                 const staffMember = message.author;
                 warn(user, reason, botContext, staffMember);
-                logger.info(`User ${user} warned for ${reason}`);
+                logger.info(`User ${user.username} warned for '${reason}'`);
                 const embed = new Discord.RichEmbed()
                     .setAuthor('PSV Bot')
                     .setColor('#0099ff')
                     .setDescription(
-                        `**User** ${user} warned\n\n **Reason**: ${reason}`
+                        `${user} warned by ${message.author}\n\n **Reason**: ${reason}`
                     )
                     .setTimestamp();
-                message.channel.send(embed);
+                botContext.modChannel.send(embed).then(message.delete());
             } catch (error) {
                 logger.info(error);
             }

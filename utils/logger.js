@@ -1,3 +1,4 @@
+// @ts-check
 const { createLogger, format, transports } = require('winston');
 
 // eslint-disable-next-line no-console

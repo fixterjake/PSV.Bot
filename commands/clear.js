@@ -1,7 +1,18 @@
+// @ts-check
 const _ = require('lodash');
 const logger = require('../utils/logger');
 
+/**
+ * @param {{ fetchMessages: (arg0: { limit: any; }) => Promise<any>; bulkDelete: (arg0: any) => void; }} channel
+ * @param {number} number
+ */
 async function clearMessages(channel, number) {
+    /**
+     * @param {any} messages
+     */
+    /**
+     * @param {string} error
+     */
     channel
         .fetchMessages({ limit: number })
         .then((messages) => {

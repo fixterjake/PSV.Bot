@@ -15,7 +15,20 @@ class BotContext {
          */
         this.discordClient = null;
 
+        /**
+         * @type {Database}
+         */
         this.database = null;
+
+        /**
+         * @type {Channel} - this comes from DiscordJS
+         */
+        this.logChannel = null;
+
+        /**
+         * @type {Channel} - this comes from DiscordJS
+         */
+        this.modChannel = null;
     }
 
     registerCommandDispatcher(commandDispatcher) {
@@ -28,6 +41,18 @@ class BotContext {
 
     registerDatabase(database) {
         this.database = database;
+    }
+
+    registerLogChannel(guild) {
+        this.logChannel = guild.channels.find(
+            (channel) => channel.name == 'logs'
+        );
+    }
+
+    registerModerationChannel(guild) {
+        this.modChannel = guild.channels.find(
+            (channel) => channel.name == 'moderation'
+        );
     }
 }
 

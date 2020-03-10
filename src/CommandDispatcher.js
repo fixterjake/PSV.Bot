@@ -1,3 +1,4 @@
+// @ts-check
 const fs = require('fs');
 const logger = require('../utils/logger');
 const _ = require('lodash');
@@ -8,6 +9,9 @@ const AuditLog = require('../utils/AuditLogs');
  * Class responsible for loading, reloading, and dispatching commands.
  */
 class CommandDispatcher {
+    /**
+     * @param {import("../../../../Code/PSV/PSV.Bot/src/BotContext")} botContext
+     */
     constructor(botContext) {
         /**
          * Keys: command names. Aliases will be represented here too.
@@ -15,10 +19,7 @@ class CommandDispatcher {
          * @type {Object<string, Object>}
          */
         this.commands = {};
-
-        /**
-         * @type {BotContext}
-         */
+        
         this.botContext = botContext;
 
         this.auditLogs = new AuditLog(this.botContext);
@@ -28,10 +29,6 @@ class CommandDispatcher {
         await this.reloadAllCommands();
     }
 
-    /**
-     * Takes a message and attempts to dispatch it as a command.
-     * @param {Message} message
-     */
     async dispatchCommand(message) {
         const {
             channel: { type: channelType },
@@ -90,10 +87,16 @@ class CommandDispatcher {
      * Checks if the author of the message can access the command that
      * they're trying to use.
      * @return {boolean}
+     * @param {{ member: { roles: { has: (arg0: any) => any; }; }; }} message
+     * @param {{ role: string; }} matchingCommand
+     * @param {{ discordClient: { guilds: { first: () => any; }; }; }} botContext
      */
     isUserAuthorized(message, matchingCommand, botContext) {
         const guild = botContext.discordClient.guilds.first();
-        const role = guild.roles.find(
+        const /**
+             * @param {{ name: any; }} role
+             */
+ role = guild.roles.find(
             (role) => role.name == matchingCommand.role
         );
         return (
@@ -128,14 +131,6 @@ class CommandDispatcher {
         return path.resolve(path.join(__dirname, '..', 'commands'));
     }
 
-    /**
-     * Refreshes all command files as though this bot were loaded for the
-     * first time. That way, if there were any changes, we will have them
-     * in memory.
-     * @param {?Message} message - if defined, then this function was
-     * triggered by a user message rather than internally, that way it can
-     * replied to.
-     */
     async reloadAllCommands(message = null) {
         this.commands = {};
 
@@ -163,7 +158,7 @@ class CommandDispatcher {
     /**
      * This will reload a single command.
      * @param {string} fileNameAndExtension - something like "command.js"
-     * @param {?Message} message - if defined, then this function was
+     * param message - if defined, then this function was
      * triggered by a user message rather than internally, that way it can
      * replied to.
      * @return {boolean} if true, this was successful
@@ -210,7 +205,7 @@ class CommandDispatcher {
      * If the Message passed in exists, then this will DM the error's
      * stack to the author.
      * @param {Error} error
-     * @param {?Message} message
+     * param {?Message} message
      */
     sendErrorToAuthor(error, message) {
         if (_.isNil(message)) {

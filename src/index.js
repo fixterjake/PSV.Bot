@@ -1,3 +1,4 @@
+// @ts-check
 const Discord = require('discord.js');
 const CommandDispatcher = require('./CommandDispatcher');
 const BotContext = require('./BotContext');
@@ -29,6 +30,12 @@ class Main {
 
     async SetupDiscordBot() {
         this.discordClient.once('ready', () => {
+            this.botContext.registerLogChannel(
+                this.botContext.discordClient.guilds.first()
+            );
+            this.botContext.registerModerationChannel(
+                this.botContext.discordClient.guilds.first()
+            );
             logger.info('Connected to Discord!');
             this.auditLog.log('Info', 'Bot Started');
         });

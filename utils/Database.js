@@ -18,6 +18,7 @@ class Database {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 client_id INTEGER NOT NULL,
                 user TEXT NOT NULL,
+                staffMember TEXT NOT NULL,
                 timestamp TEXT NOT NULL,
                 reason TEXT NOT NULL,
                 FOREIGN KEY (client_id) REFERENCES users(client_id)
@@ -28,6 +29,7 @@ class Database {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 client_id INTEGER NOT NULL,
                 user TEXT NOT NULL,
+                staffMember TEXT NOT NULL,
                 timestamp TEXT NOT NULL,
                 reason TEXT NOT NULL,
                 FOREIGN KEY (client_id) REFERENCES users(client_id)
@@ -38,6 +40,7 @@ class Database {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 client_id INTEGER NOT NULL,
                 user TEXT NOT NULL,
+                staffMember TEXT NOT NULL,
                 timestamp TEXT NOT NULL,
                 reason TEXT NOT NULL,
                 FOREIGN KEY (client_id) REFERENCES users(client_id)
@@ -47,7 +50,9 @@ class Database {
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 client_id INTEGER NOT NULL,
-                name TEXT NOT NULL)
+                name TEXT NOT NULL,
+                verified BOOLEAN NOT NULL,
+                UNIQUE(client_id))
             `;
         this.db.run(warnings, (error) => {
             if (error) {
