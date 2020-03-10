@@ -1,37 +1,43 @@
-// @ts-check
 const _ = require('lodash');
 const Discord = require('discord.js');
 const logger = require('../utils/logger');
+
+let description = ``;
 
 /**
  * @param {number} id
  * @param {{ database: { db: { each: (arg0: string, arg1: any[], arg2: (error: any, row: any) => void) => void; }; }; }} botContext
  */
-function getHistory(id, botContext) {
-    let description = ``;
-    let sql = 'SELECT * FROM warnings WHERE id = ?';
+function getHistory(channel, id, botContext) {
+    description += `**Moderation History**\n\n`;
+    let sql = 'SELECT * FROM warnings WHERE client_id = ?';
     /**
      * @param {string} error
      * @param {{ reason: string; }} row
      */
-    botContext.database.db.each(sql, [id], (error, row) => {
+    botContext.database.db.all(sql, [id], (error, rows) => {
         if (error) {
             logger.info(error);
         }
-        logger.info(row.reason);
-        description += row.reason;
+        rows.forEach((row) => {
+            description += `**${row.user}**\n **-** ${row.reason}\n **-** ${row.timestamp}\n **-** By ${row.staffMembern}\n\n`;
+        });
     });
-    return description;
+    return new Promise(resolve => {
+        setTimeout(() => {
+          resolve();
+        }, 100);
+      });
 }
 
 module.exports = {
     name: '!history',
     role: 'test',
-    execute({ message, botContext, args }) {
+    async execute({ message, botContext, args }) {
         if (_.size(args) > 0) {
             try {
                 const id = parseInt(args[0]);
-                const description = getHistory(id, botContext);
+                await getHistory(message.channel, id, botContext);
                 const embed = new Discord.RichEmbed()
                     .setAuthor('PSV Bot')
                     .setColor('#0099ff')
