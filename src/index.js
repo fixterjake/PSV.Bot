@@ -36,6 +36,10 @@ class Main {
             this.botContext.registerModerationChannel(
                 this.botContext.discordClient.guilds.first()
             );
+            this.botContext.registerNotamChannel(
+                this.botContext.discordClient.guilds.first()
+            );
+            this.discordClient.user.setActivity(`PSV1 Cleared For Takeoff`);
             logger.info('Connected to Discord!');
             this.auditLog.log('Info', 'Bot Started');
         });
@@ -83,9 +87,6 @@ class Main {
         });
         this.discordClient.on('roleDelete', async (role) => {
             await this.botEvents.onRoleDeleted(role);
-        });
-        this.discordClient.on('userUpdate', async (oldUser, newUser) => {
-            await this.botEvents.onUserUpdated(oldUser, newUser);
         });
         const authToken = process.env.DISCORD_AUTH;
         await this.discordClient.login(authToken);

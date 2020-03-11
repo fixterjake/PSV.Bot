@@ -19,7 +19,7 @@ class CommandDispatcher {
          * @type {Object<string, Object>}
          */
         this.commands = {};
-        
+
         this.botContext = botContext;
 
         this.auditLogs = new AuditLog(this.botContext);
@@ -42,7 +42,7 @@ class CommandDispatcher {
         }
 
         // Only handle messages from DMs and regular server text chat.
-        if (!_.includes(['dm', 'text'], channelType)) {
+        if (!_.includes(['text'], channelType)) {
             return;
         }
 
@@ -61,6 +61,7 @@ class CommandDispatcher {
         }
 
         if (!this.isUserAuthorized(message, matchingCommand, this.botContext)) {
+            message.channel.send('You are not authorized to execute that command!');
             return;
         }
 
@@ -72,12 +73,14 @@ class CommandDispatcher {
                 args,
                 botContext: this.botContext,
             });
-            this.auditLogs.log(
-                'Command Sent',
-                `\nChannel: ${message.channel}\n
-        User: ${message.author}\n
-        Command: ${message.content}`
-            );
+            if (message.type != 'dm') {
+                this.auditLogs.log(
+                    'Command Sent',
+                    `\nChannel: ${message.channel}\n
+                    User: ${message.author}\n
+                    Command: ${message.content}`
+                );
+            }
         } catch (error) {
             this.sendErrorToAuthor(error, message);
         }
@@ -93,10 +96,7 @@ class CommandDispatcher {
      */
     isUserAuthorized(message, matchingCommand, botContext) {
         const guild = botContext.discordClient.guilds.first();
-        const /**
-             * @param {{ name: any; }} role
-             */
- role = guild.roles.find(
+        const role = guild.roles.find(
             (role) => role.name == matchingCommand.role
         );
         return (

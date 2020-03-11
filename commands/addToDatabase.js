@@ -25,7 +25,7 @@ async function addToDatabase(member, botContext) {
 
 module.exports = {
     name: '!addtodatabase',
-    role: 'test',
+    role: 'Staff Team',
     execute({ message, botContext }) {
         const users = botContext.discordClient.guilds.first().members;
         /**

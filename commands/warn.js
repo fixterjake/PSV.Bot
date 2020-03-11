@@ -21,7 +21,7 @@ async function warn(user, reason, botContext, staffMember) {
         ' | ' +
         date.getHours() +
         ':' +
-        date.getMinutes() +
+        (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())   +
         ':' +
         date.getSeconds();
     /**
@@ -31,8 +31,8 @@ async function warn(user, reason, botContext, staffMember) {
      * @param {string} error
      */
     botContext.database.db.run(
-        'INSERT INTO warnings (client_id, user, staffMember, staffMember_id, timestamp, reason) VALUES (?,?,?,?,?,?)',
-        [user.id, user.username, staffMember.username, staffMember.id, dateString, reason],
+        'INSERT INTO warnings (client_id, type, user, staffMember, staffMember_id, timestamp, reason) VALUES (?,?,?,?,?,?,?)',
+        [user.id, 'Warn', user.username, staffMember.username, staffMember.id, dateString, reason],
         (error) => {
             if (error) {
                 logger.info(error);
@@ -46,7 +46,7 @@ async function warn(user, reason, botContext, staffMember) {
 
 module.exports = {
     name: '!warn',
-    role: 'test',
+    role: 'Staff Team',
     execute({ message, botContext, args }) {
         if (_.size(args) > 0) {
             try {
@@ -64,6 +64,7 @@ module.exports = {
                     )
                     .setTimestamp();
                 botContext.modChannel.send(embed);
+                message.channel.send(`**${user.username}** has been warned`);
             } catch (error) {
                 logger.info(error);
             }

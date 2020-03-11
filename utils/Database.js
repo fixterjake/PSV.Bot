@@ -16,6 +16,7 @@ class Database {
         const warnings = `
             CREATE TABLE IF NOT EXISTS warnings (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                type TEXT NOT NULL,
                 client_id INTEGER NOT NULL,
                 user TEXT NOT NULL,
                 staffMember TEXT NOT NULL,
@@ -28,6 +29,7 @@ class Database {
         const kicks = `
             CREATE TABLE IF NOT EXISTS kicks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                type TEXT NOT NULL,
                 client_id INTEGER NOT NULL,
                 user TEXT NOT NULL,
                 staffMember TEXT NOT NULL,
@@ -40,6 +42,7 @@ class Database {
         const bans = `
             CREATE TABLE IF NOT EXISTS bans (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                type TEXT NOT NULL,
                 client_id INTEGER NOT NULL,
                 user TEXT NOT NULL,
                 staffMember TEXT NOT NULL,

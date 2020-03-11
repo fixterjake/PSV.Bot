@@ -29,6 +29,11 @@ class BotContext {
          * @type {Channel} - this comes from DiscordJS
          */
         this.modChannel = null;
+
+        /**
+         * @type {Channel} - this comes from DiscordJS
+         */
+        this.notamChannel = null;
     }
 
     registerCommandDispatcher(commandDispatcher) {
@@ -45,13 +50,19 @@ class BotContext {
 
     registerLogChannel(guild) {
         this.logChannel = guild.channels.find(
-            (channel) => channel.name == 'logs'
+            (channel) => channel.name == 'audit-logs'
         );
     }
 
     registerModerationChannel(guild) {
         this.modChannel = guild.channels.find(
-            (channel) => channel.name == 'moderation'
+            (channel) => channel.name == 'moderation-logs'
+        );
+    }
+
+    registerNotamChannel(guild) {
+        this.notamChannel = guild.channels.find(
+            (channel) => channel.name == 'notams'
         );
     }
 }

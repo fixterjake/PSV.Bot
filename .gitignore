@@ -6,3 +6,6 @@ yarn-error.log
 logs
 .env.discord
 psv.db
+
+#Remove this if/when implemented
+commands/dispatch.js

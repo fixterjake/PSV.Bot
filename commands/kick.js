@@ -36,8 +36,8 @@ async function kick(user, reason, botContext, staffMember) {
      * @param {string} error
      */
     botContext.database.db.run(
-        'INSERT INTO kicks (client_id, user, staffMember, staffMember_id, timestamp, reason) VALUES (?,?,?,?,?,?)',
-        [user.id, user.username, staffMember.username, staffMember.id, dateString, reason],
+        'INSERT INTO kicks (client_id, type, user, staffMember, staffMember_id, timestamp, reason) VALUES (?,?,?,?,?,?,?)',
+        [user.id, 'Kick', user.username, staffMember.username, staffMember.id, dateString, reason],
         (error) => {
             if (error) {
                 logger.info(error);
@@ -51,26 +51,27 @@ async function kick(user, reason, botContext, staffMember) {
 
 module.exports = {
     name: '!kick',
-    role: 'test',
+    role: 'Staff Team',
     execute({ message, botContext, args }) {
         if (_.size(args) > 0) {
             try {
-                const userMention = message.mentions.users.first();
+                const user = message.mentions.users.first();
                 const reasonArray = args.slice(1, args.count);
                 const reason = reasonArray.join(' ');
                 const staffMember = message.author;
-                if (kick(userMention, reason, botContext, staffMember)) {
+                if (kick(user, reason, botContext, staffMember)) {
                     logger.info(
-                        `User ${userMention.username} kicked by ${staffMember.username} for '${reason}'`
+                        `User ${user.username} kicked by ${staffMember.username} for '${reason}'`
                     );
                     const embed = new Discord.RichEmbed()
                         .setAuthor('PSV Bot')
                         .setColor('#0099ff')
                         .setDescription(
-                            `${userMention} kicked by ${message.author}\n\n **Reason**: ${reason}`
+                            `${user} kicked by ${message.author}\n\n **Reason**: ${reason}`
                         )
                         .setTimestamp();
                     botContext.modChannel.send(embed);
+                    message.channel.send(`**${user.username}** has been kicked`);
                 }
             } catch (error) {
                 logger.info(error);

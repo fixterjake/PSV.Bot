@@ -20,19 +20,41 @@ function getHistory(channel, id, botContext) {
             logger.info(error);
         }
         rows.forEach((row) => {
-            description += `**${row.user}**\n **-** ${row.reason}\n **-** ${row.timestamp}\n **-** By ${row.staffMembern}\n\n`;
+            description += `**${row.type}** - **${row.user}**\n **-** ${row.reason}\n **-** ${row.timestamp}\n **-** By ${row.staffMember}\n\n`;
         });
     });
-    return new Promise(resolve => {
+
+    sql = 'SELECT * FROM kicks WHERE client_id = ?';
+
+    botContext.database.db.all(sql, [id], (error, rows) => {
+        if (error) {
+            logger.info(error);
+        }
+        rows.forEach((row) => {
+            description += `**${row.type}** - **${row.user}**\n **-** ${row.reason}\n **-** ${row.timestamp}\n **-** By ${row.staffMember}\n\n`;
+        });
+    });
+
+    sql = 'SELECT * FROM bans WHERE client_id = ?';
+
+    botContext.database.db.all(sql, [id], (error, rows) => {
+        if (error) {
+            logger.info(error);
+        }
+        rows.forEach((row) => {
+            description += `**${row.type}** - **${row.user}**\n **-** ${row.reason}\n **-** ${row.timestamp}\n **-** By ${row.staffMember}\n\n`;
+        });
+    });
+    return new Promise((resolve) => {
         setTimeout(() => {
-          resolve();
-        }, 100);
-      });
+            resolve();
+        }, 10);
+    });
 }
 
 module.exports = {
     name: '!history',
-    role: 'test',
+    role: 'Staff Team',
     async execute({ message, botContext, args }) {
         if (_.size(args) > 0) {
             try {
@@ -44,11 +66,11 @@ module.exports = {
                     .setDescription(description)
                     .setTimestamp();
                 message.channel.send(embed);
+                description = ``;
             } catch (error) {
                 logger.info(error);
             }
-        }
-        else {
+        } else {
             message.channel.send(`**Usage**: !history id`);
         }
     },

@@ -25,7 +25,7 @@ async function clearMessages(channel, number) {
 
 module.exports = {
     name: '!clear',
-    role: 'test',
+    role: 'Staff Team',
     execute({ message, botContext, args }) {
         if (_.size(args) > 0) {
             try {
